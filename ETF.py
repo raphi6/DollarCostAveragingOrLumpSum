@@ -48,7 +48,7 @@ class BuyAndHold(bt.Strategy):           # Inherit Strategy
         print("Buy * Hold")
         print('Starting Value:  ${:,.2f}'.format(self.val_start))
         print('ROI:              {:.2f}%'.format(self.roi * 100.0))
-        print('Annualized: {:.2f}%'.format(100*(1+self.roi)**(365/(end_date-actual_start).days) -1))
+        print('Annualized:      {:.2f}%'.format(100*(1+self.roi)**(365/(end_date-actual_start).days) -1))
         #print('Annualised: {:.2f}%'.format(100*((1+self.roi)**(365/(end_date-actual_start).days) -1)))
         print('Gross Return:    ${:,.2f}'.format(self.broker.get_value() - self.val_start))
 
@@ -73,8 +73,14 @@ def run(data):
     # Broker Information
     broker_args = dict(coc=True)                           # coc - cheat on close
     cerebro.broker = bt.brokers.BackBroker(**broker_args)  # To enable coc=True
+    comminfo = FixedCommissionScheme()
+    cerebro.broker.addcommissioninfo(comminfo)
 
+    cerebro.broker.set_cash(100000)    # How much money we start with
 
+    cerebro.run()
 
-if __name__ = '__main__':
+    cerebro.plot(iplot=False, style='candlestick')
+
+if __name__ == '__main__':
     run(data)
